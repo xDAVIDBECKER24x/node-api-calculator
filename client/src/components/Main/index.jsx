@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styles from "./styles.module.css";
 
 const Main = () => {
@@ -6,11 +7,20 @@ const Main = () => {
 		window.location.reload();
 	};
 
+	const [calc, setCalc] = useState('');
+	const [result, setResult] = useState('');
+
+	const ops = ['/', '*', '+', '-', '.'];
+
+	const updateCalc = value => {
+		setCalc(calc + value);
+	}
+
 	const createDigits = () => {
 		const digits =[];
 		for (let i = 1; i < 10; i++){
 			digits.push(
-				<button className={styles.button} key={i}>{i}</button>
+				<button onClick={()=> updateCalc(i.toString())} className={styles.button} key={i}>{i}</button>
 			)
 		}
 		return digits;
@@ -27,21 +37,22 @@ const Main = () => {
 			<div className={styles.calculator_container}>
 				<div className={styles.calculator}>
 					<div className={styles.display}>
-						<span>(0)</span> 0
+						{ result ? <span>(0)</span> : ''}  
+						{calc || '0'}
 
 					</div>
 					<div className={styles.operators}>
-						<button className={styles.button}>/</button>
-						<button className={styles.button}>*</button>
-						<button className={styles.button}>+</button>
-						<button className={styles.button}>-</button>
-						<button className={styles.button}>DEL</button>
+						<button onClick={()=> updateCalc('/')} className={styles.button}>/</button>
+						<button onClick={()=> updateCalc('*')} className={styles.button}>*</button>
+						<button onClick={()=> updateCalc('+')} className={styles.button}>+</button>
+						<button onClick={()=> updateCalc('-')} className={styles.button}>-</button>
+						<button onClick={()=> updateCalc('')} className={styles.button}>DEL</button>
 					</div>
 
 					<div className={styles.digits}>
 						{ createDigits() }
-						<button className={styles.button}>0</button>
-						<button className={styles.button}>.</button>
+						<button onClick={()=> updateCalc('0')} className={styles.button}>0</button>
+						<button onClick={()=> updateCalc('.')} className={styles.button}>.</button>
 						<button className={styles.button}>=</button>
 					
 					</div>
