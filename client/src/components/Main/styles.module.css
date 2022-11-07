@@ -61,6 +61,15 @@
 	color: #f5f5f5;
 }
 
+.display:focus {
+    outline: none;
+}
+
+.display::placeholder {
+    font-size: 32px;
+	color: #f5f5f5;
+}
+
 .button{
 	appearance: none;
 	border: none;

@@ -11,6 +11,7 @@ const Main = () => {
 	const [calc, setCalc] = useState('');
 	const [result, setResult] = useState('');
 	const ops = ['/', '*', '+', '-', '.'];
+	const [error, setError] = useState("");
 
 	const handleLogout = () => {
 		localStorage.removeItem("token");
@@ -70,6 +71,8 @@ const Main = () => {
 			data.time =  new Date();
 			const url = "http://localhost:8080/api/operations";
 			const { data: res } = await axios.post(url, data);
+			setCalc(res.result.toString());
+			calc = res.result;
 			console.log(res.result);
 		} catch (error) {
 			if (
@@ -77,7 +80,7 @@ const Main = () => {
 				error.response.status >= 400 &&
 				error.response.status <= 500
 			) {
-				// setError(error.response.data.message);
+				setError(error.response.data.message);
 			}
 		}
 		
@@ -101,11 +104,10 @@ const Main = () => {
 							name="operation"
 							onChange={handleChange}
 							required
-							// {/* { result ? <span>{result}</span> : ''} 
-							// &nbsp;  */}
-							
-
 						/>
+						{/* &nbsp; 
+						{ result ? <span>{result}</span> : ''}  */}
+							
 					</div>
 					<div className={styles.operators}>
 						<button onClick={()=> updateCalc('/')} className={styles.button}>/</button>
