@@ -3,13 +3,11 @@ const { Operation, validate } = require("../models/operation");
 const bcrypt = require("bcrypt");
 
 router.post("/", async (req, res) => {
+
 	try {
-		const { error } = validate(req.body);
-		if (error)
-			return res.status(400).send({ message: error.details[0].message });
-
-		const operation = await Operation.findOne({ operation: req.body.operation });
-
+	
+		console.log("Operation :");
+		console.log(req.body);
         result = 48;
         
 	

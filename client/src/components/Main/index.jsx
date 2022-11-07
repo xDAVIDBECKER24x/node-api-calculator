@@ -3,15 +3,24 @@ import styles from "./styles.module.css";
 import axios from "axios";
 
 const Main = () => {
+	const [data, setData] = useState({
+		calc: "",
+		time: "",
+	});
+
+	const [calc, setCalc] = useState('');
+	const [result, setResult] = useState('');
+	const ops = ['/', '*', '+', '-', '.'];
+
 	const handleLogout = () => {
 		localStorage.removeItem("token");
 		window.location.reload();
 	};
 
-	const [calc, setCalc] = useState('');
-	const [result, setResult] = useState('');
+	const handleChange = ({ currentTarget: input }) => {
+		setData({ ...data, [input.name]: input.value });
+	};
 
-	const ops = ['/', '*', '+', '-', '.'];
 
 	const updateCalc = value => {
 
@@ -53,14 +62,25 @@ const Main = () => {
 		setCalc(eval(calc).toString());
 	}
 
-	async function sendOperation(operation){
+	const sendOperation = async () => {
+
 		try{
-			await axios.post("http://localhost:8080/api/auth",{
-				operation
-			})
-		}catch(err){
-			console.log(err)
+			console.log(calc)
+			data.calc = calc;
+			data.time =  new Date();
+			const url = "http://localhost:8080/api/operations";
+			const { data: res } = await axios.post(url, data);
+			console.log(res.result);
+		} catch (error) {
+			if (
+				error.response &&
+				error.response.status >= 400 &&
+				error.response.status <= 500
+			) {
+				// setError(error.response.data.message);
+			}
 		}
+		
 	}
 
 	return (
@@ -73,11 +93,19 @@ const Main = () => {
 			</nav>
 			<div className={styles.calculator_container}>
 				<div className={styles.calculator}>
-					<div className={styles.display}>
-						{/* { result ? <span>{result}</span> : ''} 
-						&nbsp;  */}
-						{calc || '0'}
+					<div>
+						<input 
+							className={styles.display} 
+							value={calc}
+							placeholder="0"
+							name="operation"
+							onChange={handleChange}
+							required
+							// {/* { result ? <span>{result}</span> : ''} 
+							// &nbsp;  */}
+							
 
+						/>
 					</div>
 					<div className={styles.operators}>
 						<button onClick={()=> updateCalc('/')} className={styles.button}>/</button>
@@ -91,7 +119,7 @@ const Main = () => {
 						{ createDigits() }
 						<button onClick={()=> updateCalc('0')} className={styles.button}>0</button>
 						<button onClick={()=> updateCalc('.')} className={styles.button}>.</button>
-						<button onClick={()=> calculateOperation()} className={styles.button}>=</button>
+						<button onClick={()=> sendOperation()} className={styles.button}>=</button>
 					
 					</div>
 
